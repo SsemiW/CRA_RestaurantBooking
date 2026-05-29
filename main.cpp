@@ -2,7 +2,24 @@
 #include "booking_scheduler.cpp"
 
 TEST(BookingSchedulerTest, 예약은정시에만가능하다정시가아닌경우예약불가) {
-
+	//arrange
+	tm notOnTheHour = { 0 };
+	notOnTheHour.tm_year = 2021 - 1900; // tm 구조체는1900 년도부터데이터기록
+	notOnTheHour.tm_mon = 03 - 1; // tm 구조체는month를0부터관리
+	notOnTheHour.tm_mday = 26;
+	notOnTheHour.tm_hour = 9; // 9시
+	notOnTheHour.tm_min = 5; // 5분, 정각이아님
+	notOnTheHour.tm_isdst = -1; // -1 : daylight를자동설정으로맡김
+	mktime(&notOnTheHour); // 나머지tm구조체맴버값에대해자동으로계산하여채움
+	Customer customer{ "Fake name", "010-1234-5678" };
+	Schedule* schedule = new Schedule{ notOnTheHour, 1, customer };
+	BookingScheduler bookingScheduler{ 3 };
+	//act
+	EXPECT_THROW({
+	bookingScheduler.addSchedule(schedule);
+		}, std::runtime_error);
+	//assert
+	//expected runtime exception
 }
 
 TEST(BookingSchedulerTest, 예약은정시에만가능하다정시인경우예약가능) {
