@@ -122,7 +122,17 @@ TEST_F(BookingItem, 이메일이없는경우에는이메일미발송) {
 }
 
 TEST_F(BookingItem, 이메일이있는경우에는이메일발송) {
+    //arrange
+    Customer customerWithMail{ "Fake Name", "010-1234-5678", "test@test.com" };
+    TestableMailSender testableMailSender;
+    Schedule* schedule = new Schedule{ ON_THE_HOUR, UNDER_CAPACITY, customerWithMail };
+    bookingScheduler.setMailSender(&testableMailSender);
 
+    //act
+    bookingScheduler.addSchedule(schedule);
+
+    //assert
+    EXPECT_EQ(1, testableMailSender.getCountSendMailMethodIsCalled());
 }
 
 TEST_F(BookingItem, 현재날짜가일요일인경우예약불가예외처리) {
