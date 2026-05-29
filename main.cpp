@@ -1,6 +1,7 @@
 ﻿#include "gmock/gmock.h"
 #include "booking_scheduler.cpp"
 #include "testable_sms_sender.cpp"
+#include "testable_mail_sender.cpp"
 
 using namespace testing;
 
@@ -108,7 +109,16 @@ TEST_F(BookingItem, 예약완료시SMS는무조건발송) {
 }
 
 TEST_F(BookingItem, 이메일이없는경우에는이메일미발송) {
+    //arrange
+    TestableMailSender testableMailSender;
+    Schedule* schedule = new Schedule{ ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER };
+    bookingScheduler.setMailSender(&testableMailSender);
 
+    //act
+    bookingScheduler.addSchedule(schedule);
+
+    //assert
+    EXPECT_EQ(0, testableMailSender.getCountSendMailMethodIsCalled());
 }
 
 TEST_F(BookingItem, 이메일이있는경우에는이메일발송) {

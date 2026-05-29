@@ -135,6 +135,7 @@
     </ClCompile>
     <ClCompile Include="schedule.cpp" />
     <ClCompile Include="sms_sender.cpp" />
+    <ClCompile Include="testable_mail_sender.cpp" />
     <ClCompile Include="testable_sms_sender.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
