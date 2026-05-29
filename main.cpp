@@ -175,7 +175,12 @@ TEST_F(BookingItem, 이메일이있는경우에는이메일발송) {
 
 TEST_F(BookingItem, 현재날짜가일요일인경우예약불가예외처리) {
     //arrange
-    BookingScheduler* bookingScheduler = new TestableBookingScheduler{ CAPACITY_PER_HOUR, SUNDAY };
+    TestableBookingScheduler mockScheduler{ CAPACITY_PER_HOUR };
+    EXPECT_CALL(mockScheduler, getNow)
+        .WillRepeatedly(Return(mktime(&SUNDAY)));
+    BookingScheduler* bookingScheduler = &mockScheduler;
+
+    // BookingScheduler* bookingScheduler = new TestableBookingScheduler{ CAPACITY_PER_HOUR, SUNDAY };
     
     try {
         //act
@@ -191,7 +196,12 @@ TEST_F(BookingItem, 현재날짜가일요일인경우예약불가예외처리) {
 
 TEST_F(BookingItem, 현재날짜가일요일이아닌경우예약가능) {
     //arrange
-    BookingScheduler* bookingScheduler = new TestableBookingScheduler{ CAPACITY_PER_HOUR, MONDAY };
+    TestableBookingScheduler mockScheduler{ CAPACITY_PER_HOUR };
+    EXPECT_CALL(mockScheduler, getNow)
+        .WillRepeatedly(testing::Return(mktime(&MONDAY)));
+    BookingScheduler* bookingScheduler = &mockScheduler;
+
+    // BookingScheduler* bookingScheduler = new TestableBookingScheduler{ CAPACITY_PER_HOUR, MONDAY };
     
     //act
     Schedule* schedule = new Schedule{ ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER_WITH_MAIL };
